@@ -4,17 +4,18 @@ metadata:
   name: tax-calculator-pipeline
 spec:
   workspaces:
-    - name: shared-workspace
+    - name: pipeline-shared-workspace
   params:
     - name: image-url
       type: string
+      description: The location to store the generated image
   tasks:
     - name: npminstall
       taskRef:
-        name: npm-install
+        name: npm-build
       workspaces:
         - name: source
-          workspace: shared-workspace
+          workspace: pipeline-shared-workspace
     - name: tests
       taskRef:
         name: jasmine-test
@@ -22,7 +23,7 @@ spec:
         - npminstall
       workspaces:
         - name: source
-          workspace: shared-workspace
+          workspace: pipeline-shared-workspace
     - name: build
       taskRef:
         name: buildah
@@ -33,4 +34,4 @@ spec:
           value: $(params.image-url)
       workspaces:
         - name: source
-          workspace: shared-workspace
+          workspace: pipeline-shared-workspace
