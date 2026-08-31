@@ -9,6 +9,6 @@ spec:
     - name: image-url
       value: us.icr.io/sn-labs-sana/tax-calculator:latest
   workspaces:
-    - name: shared-workspace
+    - name: pipeline-shared-workspace
       persistentVolumeClaim:
         claimName: tax-calculator-pvc
