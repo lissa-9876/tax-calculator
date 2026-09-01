@@ -1,0 +1,37 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: tax-calculator-pipeline
+spec:
+  workspaces:
+    - name: pipeline-shared-workspace
+  params:
+    - name: image-url
+      type: string
+      description: The location to store the generated image
+  tasks:
+    - name: npminstall
+      taskRef:
+        name: npm-build
+      workspaces:
+        - name: source
+          workspace: pipeline-shared-workspace
+    - name: tests
+      taskRef:
+        name: jasmine-test
+      runAfter:
+        - npminstall
+      workspaces:
+        - name: source
+          workspace: pipeline-shared-workspace
+    - name: build
+      taskRef:
+        name: buildah
+      runAfter:
+        - tests
+      params:
+        - name: IMAGE
+          value: $(params.image-url)
+      workspaces:
+        - name: source
+          workspace: pipeline-shared-workspace
